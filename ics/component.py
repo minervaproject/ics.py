@@ -84,8 +84,11 @@ class Component(object):
         return fn
 
     def __str__(self):
+        return unicode(self).encode('utf-8')
+
+    def __unicode__(self):
         """Returns the component in an iCalendar format."""
         container = self._unused.clone()
         for output in self._OUTPUTS:
             output(self, container)
-        return str(container)
+        return unicode(container)

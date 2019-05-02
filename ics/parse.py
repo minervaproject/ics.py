@@ -5,7 +5,7 @@ from __future__ import unicode_literals, absolute_import
 
 import collections
 
-CRLF = '\r\n'
+CRLF = u'\r\n'
 
 
 class ParseError(Exception):
@@ -36,10 +36,14 @@ class ContentLine:
         self.value = value
 
     def __str__(self):
+        return unicode(self).encode('utf-8')
+
+    def __unicode__(self):
         params_str = ''
         for pname in self.params:
-            params_str += ';{}={}'.format(pname, ','.join(self.params[pname]))
-        return "{}{}:{}".format(self.name, params_str, self.value)
+            params_str += u';{}={}'.format(pname, ','.join(self.params[pname]))
+        ret = u"{}{}:{}".format(self.name, params_str, self.value)
+        return ret
 
     def __repr__(self):
         return "<ContentLine '{}' with {} parameter{}. Value='{}'>" \
@@ -95,11 +99,14 @@ class Container(list):
         self.name = name
 
     def __str__(self):
+        return __unicode__(self).encode('utf-8')
+
+    def __unicode__(self):
         name = self.name
-        ret = ['BEGIN:' + name]
+        ret = [u'BEGIN:' + name]
         for line in self:
-            ret.append(str(line))
-        ret.append('END:' + name)
+            ret.append(unicode(line))
+        ret.append(u'END:' + name)
         return CRLF.join(ret)
 
     def __repr__(self):

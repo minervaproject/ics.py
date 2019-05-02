@@ -82,7 +82,7 @@ class Calendar(Component):
 
     def __iter__(self):
         """Returns:
-        iterable: an iterable version of __str__, line per line
+        iterable: an iterable version of __unicode__, line per line
         (with line-endings).
 
         Example:
@@ -91,8 +91,8 @@ class Calendar(Component):
             >>> c = Calendar(); c.append(Event(name="My cool event"))
             >>> open('my.ics', 'w').writelines(c)
         """
-        for line in str(self).split('\n'):
-            l = line + '\n'
+        for line in unicode(self).split(u'\n'):
+            l = (line + u'\n').encode('utf-8')
             yield l
 
     def __eq__(self, other):
@@ -246,10 +246,10 @@ def o_method(calendar, container):
 @Calendar._outputs
 def o_events(calendar, container):
     for event in calendar.events:
-        container.append(str(event))
+        container.append(unicode(event))
 
 
 @Calendar._outputs
 def o_todos(calendar, container):
     for todo in calendar.todos:
-        container.append(str(todo))
+        container.append(unicode(todo))
