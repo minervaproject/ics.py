@@ -4,6 +4,7 @@
 from __future__ import unicode_literals, absolute_import
 
 from six import StringIO, string_types, text_type, integer_types
+import six
 
 import warnings
 from collections import namedtuple
@@ -84,11 +85,11 @@ class Component(object):
         return fn
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
-
-    def __unicode__(self):
         """Returns the component in an iCalendar format."""
         container = self._unused.clone()
         for output in self._OUTPUTS:
             output(self, container)
-        return unicode(container)
+        if six.PY2:
+            return text_type(container).encode('utf-8')
+        else:
+            return text_type(container)

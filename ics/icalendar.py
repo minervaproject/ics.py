@@ -4,6 +4,7 @@
 from __future__ import unicode_literals, absolute_import
 
 from six import StringIO, string_types, text_type, integer_types
+import six
 
 from dateutil.tz import tzical
 import copy
@@ -91,8 +92,10 @@ class Calendar(Component):
             >>> c = Calendar(); c.append(Event(name="My cool event"))
             >>> open('my.ics', 'w').writelines(c)
         """
-        for line in unicode(self).split(u'\n'):
-            l = (line + u'\n').encode('utf-8')
+        for line in text_type(self).split(u'\n'):
+            l = (line + u'\n')
+            if six.PY2:
+                l = l.encode('utf-8')
             yield l
 
     def __eq__(self, other):
@@ -246,10 +249,10 @@ def o_method(calendar, container):
 @Calendar._outputs
 def o_events(calendar, container):
     for event in calendar.events:
-        container.append(unicode(event))
+        container.append(text_type(event))
 
 
 @Calendar._outputs
 def o_todos(calendar, container):
     for todo in calendar.todos:
-        container.append(unicode(todo))
+        container.append(text_type(todo))

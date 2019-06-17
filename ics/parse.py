@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals, absolute_import
-
+import six
 import collections
 
 CRLF = u'\r\n'
@@ -36,14 +36,14 @@ class ContentLine:
         self.value = value
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
-
-    def __unicode__(self):
         params_str = ''
         for pname in self.params:
             params_str += u';{}={}'.format(pname, ','.join(self.params[pname]))
         ret = u"{}{}:{}".format(self.name, params_str, self.value)
-        return ret
+        if six.PY2:
+            return ret.encode('utf-8')
+        else:
+            return ret
 
     def __repr__(self):
         return "<ContentLine '{}' with {} parameter{}. Value='{}'>" \
@@ -99,15 +99,15 @@ class Container(list):
         self.name = name
 
     def __str__(self):
-        return __unicode__(self).encode('utf-8')
-
-    def __unicode__(self):
         name = self.name
         ret = [u'BEGIN:' + name]
         for line in self:
-            ret.append(unicode(line))
+            ret.append(six.text_type(line))
         ret.append(u'END:' + name)
-        return CRLF.join(ret)
+        if six.PY2:
+            return six.text_type(CRLF.join(ret)).encode('utf-8')
+        else:
+            return six.text_type(CRLF.join(ret))
 
     def __repr__(self):
         return "<Container '{}' with {} element{}>" \
