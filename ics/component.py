@@ -85,11 +85,14 @@ class Component(object):
         return fn
 
     def __str__(self):
+        if six.PY2:
+            return unicode(self).encode('utf-8')
+        else:
+            return self.__unicode__()
+
+    def __unicode__(self):
         """Returns the component in an iCalendar format."""
         container = self._unused.clone()
         for output in self._OUTPUTS:
             output(self, container)
-        if six.PY2:
-            return text_type(container).encode('utf-8')
-        else:
-            return text_type(container)
+        return text_type(container)
